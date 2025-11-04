@@ -31,7 +31,7 @@ export function Hero({ onContactClick }: HeroProps) {
           </Button>
 
           <p className="text-sm text-gotham-500 mt-6">
-            Built with  Make · n8n · OpenAI
+            Built with  Make · n8n · OpenAI · OpenRouter
           </p>
         </div>
       </div>
