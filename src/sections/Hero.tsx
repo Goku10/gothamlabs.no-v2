@@ -31,7 +31,7 @@ export function Hero({ onContactClick }: HeroProps) {
           </Button>
 
           <p className="text-sm text-gotham-500 mt-6">
-            Built with Bubble · Webflow · Make · Zapier · OpenAI
+            Built with  Make · n8n · OpenAI
           </p>
         </div>
       </div>
