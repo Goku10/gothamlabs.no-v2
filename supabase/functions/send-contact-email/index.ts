@@ -13,6 +13,79 @@ interface ContactFormData {
   brief_goal: string;
 }
 
+async function sendEmail(to: string, from: string, subject: string, htmlBody: string, textBody: string) {
+  const smtpConfig = {
+    hostname: "mail.nordhost.no",
+    port: 465,
+    username: "prospect@gothamlabs.no",
+    password: "Chinni10",
+  };
+
+  const conn = await Deno.connectTls({
+    hostname: smtpConfig.hostname,
+    port: smtpConfig.port,
+  });
+
+  const encoder = new TextEncoder();
+  const decoder = new TextDecoder();
+
+  async function readResponse(): Promise<string> {
+    const buffer = new Uint8Array(1024);
+    const n = await conn.read(buffer);
+    if (n === null) return "";
+    return decoder.decode(buffer.subarray(0, n));
+  }
+
+  async function sendCommand(command: string): Promise<string> {
+    await conn.write(encoder.encode(command + "\r\n"));
+    return await readResponse();
+  }
+
+  try {
+    await readResponse();
+
+    await sendCommand(`EHLO ${smtpConfig.hostname}`);
+
+    const authString = btoa(`\0${smtpConfig.username}\0${smtpConfig.password}`);
+    await sendCommand(`AUTH PLAIN ${authString}`);
+
+    await sendCommand(`MAIL FROM:<${from}>`);
+    await sendCommand(`RCPT TO:<${to}>`);
+    await sendCommand("DATA");
+
+    const boundary = "----=_Part_" + Math.random().toString(36).substring(2);
+    const emailContent = [
+      `From: ${from}`,
+      `To: ${to}`,
+      `Subject: ${subject}`,
+      `MIME-Version: 1.0`,
+      `Content-Type: multipart/alternative; boundary="${boundary}"`,
+      ``,
+      `--${boundary}`,
+      `Content-Type: text/plain; charset=UTF-8`,
+      ``,
+      textBody,
+      ``,
+      `--${boundary}`,
+      `Content-Type: text/html; charset=UTF-8`,
+      ``,
+      htmlBody,
+      ``,
+      `--${boundary}--`,
+      `.`
+    ].join("\r\n");
+
+    await sendCommand(emailContent);
+    await sendCommand("QUIT");
+
+    conn.close();
+    return "Email sent successfully";
+  } catch (error) {
+    conn.close();
+    throw error;
+  }
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, {
@@ -75,37 +148,16 @@ Project Type: ${project_type}
 Brief Goal: ${brief_goal}
     `;
 
-    const resendApiKey = Deno.env.get('RESEND_API_KEY');
-
-    if (!resendApiKey) {
-      throw new Error('RESEND_API_KEY is not configured');
-    }
-
-    const resendResponse = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${resendApiKey}`,
-      },
-      body: JSON.stringify({
-        from: 'Gotham Labs Contact Form <prospect@gothamlabs.no>',
-        to: ['hello@gothamlabs.no'],
-        subject: `New Project Inquiry: ${project_type} - ${name}`,
-        html: emailHtml,
-        text: emailText,
-      }),
-    });
-
-    if (!resendResponse.ok) {
-      const errorData = await resendResponse.json();
-      console.error('Resend API error:', errorData);
-      throw new Error(`Failed to send email: ${JSON.stringify(errorData)}`);
-    }
-
-    const result = await resendResponse.json();
+    await sendEmail(
+      'hello@gothamlabs.no',
+      'prospect@gothamlabs.no',
+      `New Project Inquiry: ${project_type} - ${name}`,
+      emailHtml,
+      emailText
+    );
 
     return new Response(
-      JSON.stringify({ success: true, emailId: result.id }),
+      JSON.stringify({ success: true }),
       {
         headers: {
           ...corsHeaders,
@@ -116,9 +168,9 @@ Brief Goal: ${brief_goal}
   } catch (error) {
     console.error('Error sending email:', error);
     return new Response(
-      JSON.stringify({ 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+      JSON.stringify({
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
       }),
       {
         status: 500,
