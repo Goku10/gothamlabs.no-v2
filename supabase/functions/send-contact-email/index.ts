@@ -14,11 +14,17 @@ interface ContactFormData {
 }
 
 async function sendEmail(to: string, from: string, subject: string, htmlBody: string, textBody: string) {
+  const password = Deno.env.get('prospect_pwd');
+
+  if (!password) {
+    throw new Error('prospect_pwd environment variable is not configured');
+  }
+
   const smtpConfig = {
     hostname: "mail.nordhost.no",
     port: 465,
     username: "prospect@gothamlabs.no",
-    password: "Chinni10",
+    password: password,
   };
 
   const conn = await Deno.connectTls({
