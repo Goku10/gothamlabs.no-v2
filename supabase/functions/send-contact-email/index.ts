@@ -88,8 +88,8 @@ Brief Goal: ${brief_goal}
         'Authorization': `Bearer ${resendApiKey}`,
       },
       body: JSON.stringify({
-        from: 'Gotham Labs Contact Form <prospect@gothamlabs.io>',
-        to: ['hello@gothamlabs.io'],
+        from: 'Gotham Labs Contact Form <prospect@gothamlabs.no>',
+        to: ['hello@gothamlabs.no'],
         subject: `New Project Inquiry: ${project_type} - ${name}`,
         html: emailHtml,
         text: emailText,

@@ -74,7 +74,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
     } catch (error) {
       console.error('Form submission error:', error);
       setSubmitStatus('error');
-      setErrorMessage('Something went wrong. Please try again or email hello@gothamlabs.io.');
+      setErrorMessage('Something went wrong. Please try again or email hello@gothamlabs.no.');
     } finally {
       setIsSubmitting(false);
     }
@@ -188,10 +188,10 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
           <Mail className="inline-block mr-2" size={16} />
           Or email us at{' '}
           <a
-            href="mailto:hello@gothamlabs.io"
+            href="mailto:hello@gothamlabs.no"
             className="text-primary hover:text-primary/90 underline"
           >
-            hello@gothamlabs.io
+            hello@gothamlabs.no
           </a>
         </div>
 

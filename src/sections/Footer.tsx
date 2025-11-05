@@ -11,7 +11,7 @@ export function Footer() {
     ],
     company: [
       { name: 'About', href: '#' },
-      { name: 'Contact', href: 'mailto:hello@gothamlabs.io' },
+      { name: 'Contact', href: 'mailto:hello@gothamlabs.no' },
     ],
     legal: [
       { name: 'Privacy Policy', href: '#' },
@@ -44,11 +44,11 @@ export function Footer() {
               Custom AI tools, dashboards, and automations built fast.
             </p>
             <a
-              href="mailto:hello@gothamlabs.io"
+              href="mailto:hello@gothamlabs.no"
               className="flex items-center gap-2 text-gotham-300 hover:text-gotham-100 transition-colors text-sm"
             >
               <Mail size={16} />
-              hello@gothamlabs.io
+              hello@gothamlabs.no
             </a>
           </div>
 

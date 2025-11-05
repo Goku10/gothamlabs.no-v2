@@ -51,10 +51,10 @@ export function FAQ({ onItemOpen }: FAQProps) {
             Have a different question?
           </p>
           <a
-            href="mailto:hello@gothamlabs.io"
+            href="mailto:hello@gothamlabs.no"
             className="text-primary hover:text-primary/90 underline transition-colors"
           >
-            Email us at hello@gothamlabs.io
+            Email us at hello@gothamlabs.no
           </a>
         </div>
       </div>
