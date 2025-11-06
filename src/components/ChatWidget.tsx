@@ -46,7 +46,7 @@ export default function ChatWidget() {
 
     try {
       const response = await fetch(
-        'https://n8n.srv1011292.hstgr.cloud/webhook/8264b325-1239-4ae3-84a4-14306031a3d5/chat',
+        'https://n8n.srv1011292.hstgr.cloud/webhook/4861be7d-63e7-4b73-a9f6-cab40ce4d0f0',
         {
           method: 'POST',
           headers: {
