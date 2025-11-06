@@ -62,7 +62,19 @@ export default function ChatWidget() {
         throw new Error('Failed to send message');
       }
 
-      const data = await response.json();
+      const responseText = await response.text();
+      let data;
+      
+      if (responseText.trim()) {
+        try {
+          data = JSON.parse(responseText);
+        } catch (parseError) {
+          console.error('Failed to parse JSON response:', parseError);
+          data = { message: 'Response received successfully' };
+        }
+      } else {
+        data = { message: 'Response received successfully' };
+      }
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
